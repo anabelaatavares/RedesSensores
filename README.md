@@ -1,2 +1,2 @@
 # RedesSensores
-![alt tag](https://github.com/anabelaatavares/RedesSensores/blob/master/rascunho.png)
+![alt tag](https://github.com/anabelaatavares/RedesSensores/blob/master/rascunho.jpg)
