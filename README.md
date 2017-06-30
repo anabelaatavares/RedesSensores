@@ -1,5 +1,7 @@
 # RedesSensores
 
+[Link do relatório](https://docs.google.com/document/d/1uEnSPnYdgyAed7fiVNI8-nTfyCl28hnPINedTKEBsfI/edit)
+
 ## Estrutura
 - Nome do Projeto
 - Resumo
