@@ -8,11 +8,13 @@ String myString;
 byte mByte;
 byte bytesRecebidos[100];
 
+long tempoAtual, tempoInicio;
+
 void setup()
 {
   //Define o pino 13 - LED embutido no Arduino - como saida
   pinMode(13, OUTPUT);
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial3.begin(9600);
 }
 
@@ -30,8 +32,8 @@ void loop()
       myString = String((char*)bytesRecebidos);
       i = 0;
     }
-    if(myString != '~'){
-    Serial.println(myString);
+    if (myString != '~') {
+      Serial.println(myString);
     }
   }
 }
