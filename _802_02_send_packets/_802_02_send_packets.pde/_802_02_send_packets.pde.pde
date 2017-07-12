@@ -36,7 +36,7 @@ void loop()
 {
   tempoAtual = millis();
 
-  if (tempoAtual - tempoInicio > 5000) {
+  if (tempoAtual - tempoInicio > 2000) {
     tempoInicio = millis();
 
     // Create new frame (ASCII)

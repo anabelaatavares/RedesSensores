@@ -1,12 +1,7 @@
-//Programa : Comunicacao Xbee utilizando Arduino Xbee Shield
-//Autor : FILIPEFLOP
-
-//Armazena os valores recebidos da serial
-int i = 0;
-//Armazena o estado do led
-String myString;
-byte mByte;
-byte bytesRecebidos[100];
+String myString, idNodeMCU, NodeCorredor, ContaPassagem, CoordenadasGPS;
+String valores [100];
+String mByte;
+byte bytesRecebidos[200];
 
 long tempoAtual, tempoInicio;
 
@@ -21,21 +16,34 @@ void setup()
 void loop()
 {
   if (Serial3.available() > 0) {
-    mByte = Serial3.read();
-    //estado = Serial3.readString();
-    //Serial.println(mByte);
-    if (mByte != 60) {
-      bytesRecebidos[i] = mByte;
-      i++;
-    } else {
-      bytesRecebidos[i] = 0;
+    mByte = Serial3.readBytesUntil('<=>', bytesRecebidos, 128);
+    if (mByte != 16) {
       myString = String((char*)bytesRecebidos);
-      i = 0;
+      if (myString != "~") {
+        idNodeMCU = getValue(myString, '#', 1);
+        NodeCorredor = getValue(myString, '#', 2);
+        ContaPassagem = getValue(myString, '#', 3);
+        CoordenadasGPS = getValue(myString, '#', 4);
+        Serial.println(idNodeMCU + " " + NodeCorredor + " " + ContaPassagem + " " + CoordenadasGPS);
+      }
+
     }
-    if (myString != '~') {
-      Serial.println(myString);
-    }
+
   }
 }
 
-//myString = String((char*)bytesRecebidos);
+String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = { 0, -1 };
+  int maxIndex = data.length() - 1;
+
+  for (int i = 0; i <= maxIndex && found <= index; i++) {
+    if (data.charAt(i) == separator || i == maxIndex) {
+      found++;
+      strIndex[0] = strIndex[1] + 1;
+      strIndex[1] = (i == maxIndex) ? i + 1 : i;
+    }
+  }
+  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
