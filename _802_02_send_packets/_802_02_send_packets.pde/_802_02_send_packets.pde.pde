@@ -28,10 +28,14 @@ uint8_t error;
 
 long tempoAtual, tempoInicio;
 
+int intervalo = 5000;
+int numFrame = 0;
 
 
 void setup()
 {
+  xbee802.OFF();
+  GPS.OFF();
   // init USB port
   USB.ON();
   USB.println(F("GPS_EXAMPLE"));
@@ -39,7 +43,8 @@ void setup()
   frame.setID(WASPMOTE_ID);
   // init XBee
   //xbee802.ON();
-  //GPS.ON();
+  GPS.ON();
+
 }
 
 
@@ -61,12 +66,17 @@ void loop()
     double distance = computeDistanceBetween (coord_chekpoint, coord_user);
     //Coords coordenadas(10,10);
     USB.print(distance);
+    USB.print(F("\n"));
+
+    if(distance < 215) {
+      checkpoint = true;
+    }
 
   }
   enviarPacote();
   
   
-  delay(5000);
+  delay(intervalo);
 }
 
 void enviarPacote() {
@@ -75,6 +85,7 @@ void enviarPacote() {
 
   // Create new frame (ASCII)
   frame.createFrame(ASCII);
+  //frame.addSensor(SENSOR_STR, numFrame);
   frame.addSensor(SENSOR_GPS, lat, lng);
   // Prints frame
   frame.showFrame();
@@ -89,19 +100,27 @@ void enviarPacote() {
     USB.println(F("send error"));
   }
 
+  numFrame++;
+  USB.print(numFrame);  
   checkpoint = false;
-
+  GPS.ON();
 }
 
 void sacarCoordenadas() {
   xbee802.OFF();
-  GPS.ON();
+  
   status = GPS.waitForSignal(TIMEOUT);
 
   if( status == true ) {
+    USB.println(F("\n----------------------"));
+    USB.println(F("Connected"));
+    USB.println(F("----------------------"));
     lat = GPS.convert2Degrees(GPS.latitude, GPS.NS_indicator);
     lng = GPS.convert2Degrees(GPS.longitude, GPS.EW_indicator);
   } else {
+    USB.println(F("\n----------------------"));
+    USB.println(F("GPS TIMEOUT. NOT connected"));
+    USB.println(F("----------------------"));
     lat = 0.0;
     lng = 0.0;
   }

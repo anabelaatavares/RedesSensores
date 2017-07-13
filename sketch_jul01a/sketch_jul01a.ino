@@ -10,6 +10,7 @@ void setup()
   //Define o pino 13 - LED embutido no Arduino - como saida
   pinMode(13, OUTPUT);
   Serial.begin(115200);
+  Serial1.begin(115200);
   Serial3.begin(9600);
 }
 
@@ -22,9 +23,11 @@ void loop()
       if (myString != "~") {
         idNodeMCU = getValue(myString, '#', 1);
         NodeCorredor = getValue(myString, '#', 2);
-        ContaPassagem = getValue(myString, '#', 3);
-        CoordenadasGPS = getValue(myString, '#', 4);
-        Serial.println(idNodeMCU + " " + NodeCorredor + " " + ContaPassagem + " " + CoordenadasGPS);
+        //ContaPassagem = getValue(myString, '#', 3);
+        //String auxContaPassagem = getValue(myString, '#', 4);
+        CoordenadasGPS = getValue(myString, '#', 4 );
+        Serial.println("#" + NodeCorredor + "#" + CoordenadasGPS);
+        Serial1.println("#" + NodeCorredor + "#" + CoordenadasGPS);
       }
 
     }

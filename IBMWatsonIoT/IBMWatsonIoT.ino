@@ -31,7 +31,8 @@ void setup() {
   Serial.begin(115200);
   Serial.println();
 
-  Serial.print("Connecting to "); Serial.print(ssid);
+  Serial.print("Connecting to ");
+  Serial.print(ssid);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -39,7 +40,8 @@ void setup() {
   }
   Serial.println("");
 
-  Serial.print("WiFi connected, IP address: "); Serial.println(WiFi.localIP());
+  Serial.print("WiFi connected, IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
 int counter = 0;
@@ -56,8 +58,19 @@ void loop() {
     Serial.println();
   }
 
-  String payload = "{\"d\":{\"myName\":\"ESP8266.Test1\",\"counter\":";
-  payload += counter;
+  //ler coordenadas do arduino
+  byte bytesRecebidos[64];
+  if (Serial.available() > 0) {
+    Serial.readBytes(bytesRecebidos, 64);
+  }
+  String myString = String((char*)bytesRecebidos);
+  String NodeCorredor = getValue(myString, '#', 1);
+  String CoordenadasGPS = getValue(myString, '#', 2);
+  //"{\"Sucesso\":\"" + temperature + "\"}"
+  String payload = "{\"d\":{\"Corredor\":\"" + NodeCorredor + "\", GPS:\"" + CoordenadasGPS + "\""  ;
+
+  //String payload = "{\"d\":{\"myName\":\"ESP8266.Test1\",\"counter\":";
+  //payload += counter;
   payload += "}}";
 
   Serial.print("Sending payload: ");
@@ -70,5 +83,24 @@ void loop() {
   }
 
   ++counter;
-  delay(10000);
+  delay(30000);
+}
+
+
+
+
+String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = { 0, -1 };
+  int maxIndex = data.length() - 1;
+
+  for (int i = 0; i <= maxIndex && found <= index; i++) {
+    if (data.charAt(i) == separator || i == maxIndex) {
+      found++;
+      strIndex[0] = strIndex[1] + 1;
+      strIndex[1] = (i == maxIndex) ? i + 1 : i;
+    }
+  }
+  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
